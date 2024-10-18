@@ -10,13 +10,32 @@ NATURE_TYPES = (
     ('Part Time','Part Time'),
     ('Remote','Remote'),
     ('Freelance','Freelance'),
+    ('Internship','internship'),
     )
+TOWNS_IN_ZAMBIA = {
+    'Chingola': 'Chingola',
+    'Lusaka': 'Lusaka',
+    'Kitwe': 'Kitwe',
+    'Ndola': 'Ndola',
+    'Livingstone': 'Livingstone',
+    'Luanshya': 'Luanshya',
+    'Mufulira': 'Mufulira',
+    'Kabwe': 'Kabwe',
+    'Solwezi': 'Solwezi',
+    'Chipata': 'Chipata',
+    'Kabwe': 'Kabwe',
+    'Choma': 'Choma',
+    'Siavonga': 'Siavonga',
+    'Mansa': 'Mansa',
+    'Kasama': 'Kasama',
+    # Add other towns as necessary
+}
 
 class Job(models.Model):
     title = models.CharField(_('Title'),max_length=150)
     category = models.ForeignKey('Category',verbose_name=_('Category'),related_name='job_category',on_delete=models.SET_NULL,null=True,blank=True)
     agency = models.ForeignKey('Company',verbose_name=_('Company'),related_name='job_company',on_delete=models.SET_NULL,null=True,blank=True)
-    location = models.CharField(_('Location'),max_length=150)
+    location = models.CharField(_('Location'), max_length=150, choices=[(key, value) for key, value in TOWNS_IN_ZAMBIA.items()], default='Chingola')
     salary = models.FloatField(_('Salary'),)
     created_at = models.DateTimeField(_('Created at'),default=timezone.now)
     vacancy = models.IntegerField(_('Vacancy'),)
