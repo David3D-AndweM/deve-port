@@ -40,6 +40,7 @@ urlpatterns = [
     path('api/companies/<int:pk>/', CompanyDetailAPI.as_view(), name='api_company_detail'),
 
     path('jobs/<slug:job_slug>/apply/', apply_for_job, name='apply_for_job'),
+    path('job/<int:pk>/', JobDetail.as_view(), name='job_detail')
     
 ]
 

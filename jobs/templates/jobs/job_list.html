@@ -5,293 +5,240 @@
 
     <main>
 
-        <!-- Hero Area Start-->
-        <div class="slider-area ">
-            <div class="single-slider section-overly slider-height2 d-flex align-items-center" data-background="{% static 'en/img/hero/about.jpg' %}">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="hero-cap text-center">
-                                <h2>Get your job</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Hero Area End -->
-        <!-- Job List Area Start -->
-        <div class="job-listing-area pt-120 pb-120">
-            <div class="container">
-                <div class="row">
-                    <!-- Left content -->
-                    <div class="col-xl-3 col-lg-3 col-md-4">
-                        <div class="row">
-                            <div class="col-12">
-                                    <div class="small-section-tittle2 mb-45">
-                                    <div class="ion"> <svg 
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        xmlns:xlink="http://www.w3.org/1999/xlink"
-                                        width="20px" height="12px">
-                                    <path fill-rule="evenodd"  fill="rgb(27, 207, 107)"
-                                        d="M7.778,12.000 L12.222,12.000 L12.222,10.000 L7.778,10.000 L7.778,12.000 ZM-0.000,-0.000 L-0.000,2.000 L20.000,2.000 L20.000,-0.000 L-0.000,-0.000 ZM3.333,7.000 L16.667,7.000 L16.667,5.000 L3.333,5.000 L3.333,7.000 Z"/>
-                                    </svg>
-                                    </div>
-                                    <h4>Filter Jobs</h4>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Job Category Listing start -->
-                        <div class="job-category-listing mb-50">
-                            <!-- single one -->
-                            <div class="single-listing">
-                               <div class="small-section-tittle2">
-                                     <h4>Job Category</h4>
-                               </div>
-                                <!-- Select job items start -->
-                                <div class="select-job-items2">
-                                    <select name="select">
-                                        <option value="">All Category</option>
-                                        <option value="">Category 1</option>
-                                        <option value="">Category 2</option>
-                                        <option value="">Category 3</option>
-                                        <option value="">Category 4</option>
-                                    </select>
-                                </div>
-                                 <!-- Select job items End-->
-                                 
-
-
-                                    <!-- select-Categories start -->
-                                    <div class="select-Categories pt-80 pb-50">
-                                        <div class="small-section-tittle2">
-                                            <h4>Job Type</h4>
-                                        </div>
-                                        <label class="container">Full Time
-                                            <input type="checkbox" name="job_nature" value="full_time" {% if request.GET.job_nature == 'full_time' %}checked{% endif %}>
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <label class="container">Part Time
-                                            <input type="checkbox" name="job_nature" value="part_time" {% if request.GET.job_nature == 'part_time' %}checked{% endif %}>
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <label class="container">Remote
-                                            <input type="checkbox" name="job_nature" value="remote" {% if request.GET.job_nature == 'remote' %}checked{% endif %}>
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <label class="container">Freelance
-                                            <input type="checkbox" name="job_nature" value="freelance" {% if request.GET.job_nature == 'freelance' %}checked{% endif %}>
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <!-- select-Categories End -->
-                                
-                                    <!-- single two -->
-                                    <div class="single-listing">
-                                        <div class="small-section-tittle2">
-                                            <h4>Job Location</h4>
-                                        </div>
-                                        <!-- Select job items start -->
-                                        <div class="select-job-items2">
-                                            <select name="location" onchange="this.form.submit()">
-                                                <option value="">Anywhere</option>
-                                                {% for location in locations %}
-                                                <option value="{{ location }}" {% if request.GET.location == location %}selected{% endif %}>
-                                                    {{ location }}
-                                                </option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <!-- Select job items End -->
-                                    </div>
-                                
-                                    <!-- select-Categories start -->
-                                    <div class="select-Categories pt-80 pb-50">
-                                        <div class="small-section-tittle2">
-                                            <h4>Experience</h4>
-                                        </div>
-                                        <label class="container">1-2 Years
-                                            <input type="checkbox" name="experience" value="1-2" {% if request.GET.experience == '1-2' %}checked{% endif %}>
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <label class="container">2-3 Years
-                                            <input type="checkbox" name="experience" value="2-3" {% if request.GET.experience == '2-3' %}checked{% endif %}>
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <label class="container">3-6 Years
-                                            <input type="checkbox" name="experience" value="3-6" {% if request.GET.experience == '3-6' %}checked{% endif %}>
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <label class="container">6+ Years
-                                            <input type="checkbox" name="experience" value="6+" {% if request.GET.experience == '6+' %}checked{% endif %}>
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <!-- select-Categories End -->
-                                
-                                    <!-- single three -->
-                                    <div class="single-listing">
-                                        <!-- select-Categories start -->
-                                        <div class="select-Categories pb-50">
-                                            <div class="small-section-tittle2">
-                                                <h4>Posted Within</h4>
-                                            </div>
-                                            <label class="container">Any
-                                                <input type="checkbox" name="posted_within" value="any" {% if request.GET.posted_within == 'any' %}checked{% endif %}>
-                                                <span class="checkmark"></span>
-                                            </label>
-                                            <label class="container">Today
-                                                <input type="checkbox" name="posted_within" value="today" {% if request.GET.posted_within == 'today' %}checked{% endif %}>
-                                                <span class="checkmark"></span>
-                                            </label>
-                                            <label class="container">Last 2 Days
-                                                <input type="checkbox" name="posted_within" value="2_days" {% if request.GET.posted_within == '2_days' %}checked{% endif %}>
-                                                <span class="checkmark"></span>
-                                            </label>
-                                            <label class="container">Last 3 Days
-                                                <input type="checkbox" name="posted_within" value="3_days" {% if request.GET.posted_within == '3_days' %}checked{% endif %}>
-                                                <span class="checkmark"></span>
-                                            </label>
-                                            <label class="container">Last 5 Days
-                                                <input type="checkbox" name="posted_within" value="5_days" {% if request.GET.posted_within == '5_days' %}checked{% endif %}>
-                                                <span class="checkmark"></span>
-                                            </label>
-                                            <label class="container">Last 10 Days
-                                                <input type="checkbox" name="posted_within" value="10_days" {% if request.GET.posted_within == '10_days' %}checked{% endif %}>
-                                                <span class="checkmark"></span>
-                                            </label>
-                                        </div>
-                                        <!-- select-Categories End -->
-                                    </div>
-                                
-                                    <button type="submit">Filter</button>
-                                </form>
-                                
-                            </div>
-                            <div class="single-listing">
-                                <!-- Range Slider Start -->
-                                <aside class="left_widgets p_filter_widgets price_rangs_aside sidebar_box_shadow">
-                                    <div class="small-section-tittle2">
-                                        <h4>Filter Jobs</h4>
-                                    </div>
-                                    <div class="widgets_inner">
-                                        <div class="range_item">
-                                            <!-- <div id="slider-range"></div> -->
-                                            <input type="text" class="js-range-slider" value="" />
-                                            <div class="d-flex align-items-center">
-                                                <div class="price_text">
-                                                    <p>Price :</p>
-                                                </div>
-                                                <div class="price_value d-flex justify-content-center">
-                                                    <input type="text" class="js-input-from" id="amount" readonly />
-                                                    <span>to</span>
-                                                    <input type="text" class="js-input-to" id="amount" readonly />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </aside>
-                              <!-- Range Slider End -->
-                            </div>
-                        </div>
-                        <!-- Job Category Listing End -->
-                    </div>
-                    <!-- Right content -->
-                    <div class="col-xl-9 col-lg-9 col-md-8">
-                        <!-- Featured_job_start -->
-                        <section class="featured-job-area">
-                            <div class="container">
-                                <!-- Count of Job list Start -->
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="count-job mb-35">
-                                            <span>{{ job_list.forloop.counter }}</span>
-                                            <!-- Select job items start -->
-                                            <div class="select-job-items">
-                                                <span>Sort by</span>
-                                                <select name="select">
-                                                    <option value="">None</option>
-                                                    <option value="">job list</option>
-                                                    <option value="">job list</option>
-                                                    <option value="">job list</option>
-                                                </select>
-                                            </div>
-                                            <!--  Select job items End-->
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Count of Job list End -->
-                                {% for object in job_list %}
-                                <div class="single-job-items mb-30">
-                                    <div class="job-items">
-                                        <div class="company-img">
-                                            <a href="#"><img src="{{ object.agency.logo.url }}" 
-                                                alt="Agency Logo" 
-                                                style="width: 100%; height: auto; max-width: 500px; object-fit: contain; display: block; margin: 0 auto;">
-                                           >br
-</a>
-                                        </div>
-                                        <div class="job-tittle job-tittle2">
-                                            <a href="{% url 'job_detail' object.slug %}">
-                                                <h4>{{ object.title }}</h4>
-                                            </a>
-                                            <ul>
-                                                <li>{{ object.agency.name }}</li>
-                                                <li><i class="fas fa-map-marker-alt"></i>{{ object.location }}</li>
-                                                <li>${{ object.salary }}</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="items-link items-link2 f-right">
-                                        <a href="{% url 'job_detail' object.slug %}">{{ object.job_nature }}</a>
-                                        <span>{{ object.application_date }}</span>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </section>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Job List Area End -->
-         
-        <!--Pagination Start  -->
-        {% if is_paginated %}
+<!-- Hero Area Start-->
+<div class="slider-area">
+    <div class="single-slider section-overly slider-height2 d-flex align-items-center"
+         data-background="{% static 'en/img/hero/about.jpg' %}">
+        <div class="container">
             <div class="row">
-                <div class="col-lg-12">
-                    <div class="bottom-paginate">
-                        <p class="page-info">Showing 12 of 60 Results</p>
-                        <ul class="pagination">
-                            {% if page_obj.has_previous %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{page_obj.previous_page_number}}">
-                                        <i class="fas fa-long-arrow-alt-left"></i>
-                                    </a>
-                                </li>
-                            {% endif %}   
-                            {% for i in paginator.page_range %}
-                            {% if page_obj.number == i %}
-                                <li class="page-item"><a class="page-link active" href="#">{{i}}</a></li>
-                            {% elif i > page_obj.number|add:'-4' and i < page_obj.number|add:'4' %}
-                                <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
-                            {% endif %}
-                            {% endfor %}
-                            {% if page_obj.has_next %}
-                                
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{page_obj.next_page_number}}">
-                                        <i class="fas fa-long-arrow-alt-right"></i>
-                                    </a>
-                                </li>
-                            {% endif %}    
-                        </ul>   
+                <div class="col-xl-12">
+                    <div class="hero-cap text-center">
+                        <h2 class="hero-title">Get Your Dream Job</h2>
+                        <p class="hero-subtitle">Explore thousands of job opportunities tailored for you.</p>
                     </div>
                 </div>
             </div>
-        {% endif %}
-        <!--Pagination End  -->
-        
+        </div>
+    </div>
+</div>
+<!-- Hero Area End -->
+
+<!-- Job List Area Start -->
+<div class="job-listing-area pt-120 pb-120">
+    <div class="container">
+        <div class="row">
+            <!-- Left content -->
+            <div class="col-xl-3 col-lg-3 col-md-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="small-section-title mb-45">
+                            <div class="ion">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="12px">
+                                    <path fill-rule="evenodd" fill="rgb(27, 207, 107)"
+                                          d="M7.778,12.000 L12.222,12.000 L12.222,10.000 L7.778,10.000 L7.778,12.000 ZM-0.000,-0.000 L-0.000,2.000 L20.000,2.000 L20.000,-0.000 L-0.000,-0.000 ZM3.333,7.000 L16.667,7.000 L16.667,5.000 L3.333,5.000 L3.333,7.000 Z"/>
+                                </svg>
+                            </div>
+                            <h4>Filter Jobs</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- Job Category Listing start -->
+                <div class="job-category-listing mb-50">
+                    <!-- single one -->
+                    <div class="single-listing">
+                        <div class="small-section-title">
+                            <h4>Job Category</h4>
+                        </div>
+                        <div class="select-job-items2">
+                            <select name="select">
+                                <option value="">All Categories</option>
+                                <option value="">Category 1</option>
+                                <option value="">Category 2</option>
+                                <option value="">Category 3</option>
+                                <option value="">Category 4</option>
+                            </select>
+                        </div>
+
+                        <div class="select-Categories pt-80 pb-50">
+                            <div class="small-section-title">
+                                <h4>Job Type</h4>
+                            </div>
+                            <label class="container">Full Time
+                                <input type="checkbox" name="job_nature" value="full_time"
+                                       {% if request.GET.job_nature == 'full_time' %}checked{% endif %}>
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container">Part Time
+                                <input type="checkbox" name="job_nature" value="part_time"
+                                       {% if request.GET.job_nature == 'part_time' %}checked{% endif %}>
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container">Remote
+                                <input type="checkbox" name="job_nature" value="remote"
+                                       {% if request.GET.job_nature == 'remote' %}checked{% endif %}>
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container">Freelance
+                                <input type="checkbox" name="job_nature" value="freelance"
+                                       {% if request.GET.job_nature == 'freelance' %}checked{% endif %}>
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+
+                        <!-- Job Location -->
+                        <div class="single-listing">
+                            <div class="small-section-title">
+                                <h4>Job Location</h4>
+                            </div>
+                            <div class="select-job-items2">
+                                <select name="location" onchange="this.form.submit()">
+                                    <option value="">Anywhere</option>
+                                    {% for location in locations %}
+                                    <option value="{{ location }}"
+                                            {% if request.GET.location == location %}selected{% endif %}>
+                                        {{ location }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Experience -->
+                        <div class="select-Categories pt-80 pb-50">
+                            <div class="small-section-title">
+                                <h4>Experience</h4>
+                            </div>
+                            <label class="container">1-2 Years
+                                <input type="checkbox" name="experience" value="1-2"
+                                       {% if request.GET.experience == '1-2' %}checked{% endif %}>
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container">2-3 Years
+                                <input type="checkbox" name="experience" value="2-3"
+                                       {% if request.GET.experience == '2-3' %}checked{% endif %}>
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container">3-6 Years
+                                <input type="checkbox" name="experience" value="3-6"
+                                       {% if request.GET.experience == '3-6' %}checked{% endif %}>
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container">6+ Years
+                                <input type="checkbox" name="experience" value="6+"
+                                       {% if request.GET.experience == '6+' %}checked{% endif %}>
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+
+                        <!-- Posted Within -->
+                        <div class="single-listing">
+                            <div class="select-Categories pb-50">
+                                <div class="small-section-title">
+                                    <h4>Posted Within</h4>
+                                </div>
+                                <label class="container">Any
+                                    <input type="checkbox" name="posted_within" value="any"
+                                           {% if request.GET.posted_within == 'any' %}checked{% endif %}>
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container">Today
+                                    <input type="checkbox" name="posted_within" value="today"
+                                           {% if request.GET.posted_within == 'today' %}checked{% endif %}>
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container">Last 2 Days
+                                    <input type="checkbox" name="posted_within" value="2_days"
+                                           {% if request.GET.posted_within == '2_days' %}checked{% endif %}>
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container">Last 3 Days
+                                    <input type="checkbox" name="posted_within" value="3_days"
+                                           {% if request.GET.posted_within == '3_days' %}checked{% endif %}>
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container">Last 5 Days
+                                    <input type="checkbox" name="posted_within" value="5_days"
+                                           {% if request.GET.posted_within == '5_days' %}checked{% endif %}>
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container">Last 10 Days
+                                    <input type="checkbox" name="posted_within" value="10_days"
+                                           {% if request.GET.posted_within == '10_days' %}checked{% endif %}>
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="filter-button">Filter</button>
+                    </div>
+                </div>
+                <!-- Job Category Listing End -->
+            </div>
+            <!-- Right content -->
+            <div class="col-xl-9 col-lg-9 col-md-8">
+                <section class="featured-job-area">
+                    <div class="container">
+       <!-- Count of Job list Start -->
+<!-- Count of Job list Start -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="count-job mb-35">
+            <span class="job-count">{{ job_list.count }}</span> <!-- Display total job count -->
+            <div class="select-job-items">
+                <span>Sort by</span>
+                <select name="select">
+                    <option value="">None</option>
+                    <option value="">Job List</option>
+                    <option value="">Job List</option>
+                    <option value="">Job List</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Count of Job list End -->
+
+{% for object in job_list %}
+<div class="single-job-items mb-30 wow fadeIn" data-wow-duration="1s" data-wow-delay="0.3s">
+    <div class="job-items">
+        <div class="company-img">
+            <img src="{{ object.company.logo.url }}" alt="Company Logo">
+        </div>
+        <div class="job-tittle">
+            <a href="{% url 'job_detail' object.id %}">  <!-- Change 'job_details' to 'job_detail' -->
+                <h4>{{ object.title }}</h4>
+            </a>
+            <ul>
+                <li><i class="fas fa-map-marker-alt"></i> {{ object.location }}</li>
+                <li><i class="far fa-clock"></i> {{ object.job_type }}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="items-link f-right">
+        <a href="{% url 'job_detail' object.id %}" class="btn">Apply Now</a> <!-- Ensure consistent URL usage -->
+    </div>
+</div>
+{% endfor %}
+
+
+                <!-- Pagination -->
+                <div class="row">
+                    <div class="col-12">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     </main>
 
     {% endblock body %}
