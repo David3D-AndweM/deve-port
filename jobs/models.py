@@ -5,6 +5,19 @@ from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
+from django.db import models
+from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
+from django.utils.timezone import now
+
+from django.db import models
+from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
+from django.utils.timezone import now
+
+
+
+
 NATURE_TYPES = (
     ('Full Time','Full Time'),
     ('Part Time','Part Time'),
@@ -36,7 +49,7 @@ class Job(models.Model):
     category = models.ForeignKey('Category',verbose_name=_('Category'),related_name='job_category',on_delete=models.SET_NULL,null=True,blank=True)
     agency = models.ForeignKey('Company',verbose_name=_('Company'),related_name='job_company',on_delete=models.SET_NULL,null=True,blank=True)
     location = models.CharField(_('Location'), max_length=150, choices=[(key, value) for key, value in TOWNS_IN_ZAMBIA.items()], default='Chingola')
-    salary = models.FloatField(_('Salary'),)
+    salary = models.FloatField(_('Salary (ZMW)'), help_text=_('Salary in Zambian Kwacha'))
     created_at = models.DateTimeField(_('Created at'),default=timezone.now)
     vacancy = models.IntegerField(_('Vacancy'),)
     job_nature = models.CharField(_('Job Nature'),max_length=20,choices=NATURE_TYPES) 
@@ -111,4 +124,26 @@ class Company(models.Model):
         return self.jobs.count()
 
 
-        
+class JobApplication(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    applicant = models.ForeignKey(User, on_delete=models.CASCADE)
+    nrc_number = models.CharField(max_length=20)
+    nrc_copy = models.FileField(upload_to='nrc/', null=True, blank=True)
+    school_institution = models.CharField(max_length=255, blank=True, null=True)
+
+    linkedIn_profile = models.URLField(blank=True)
+    age = models.PositiveIntegerField()
+    experience = models.PositiveIntegerField()
+    resume = models.FileField(upload_to='resumes/', null=True, blank=True)
+    applied_at = models.DateTimeField(auto_now_add=True)  # Add this line
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Application for {self.job.title} by {self.applicant.username}"
+
+class Certificate(models.Model):
+    application = models.ForeignKey(JobApplication, on_delete=models.CASCADE, related_name='certificates')
+    file = models.FileField(upload_to='applications/certificates/')
+
+    def __str__(self):
+        return f"Certificate for {self.application.applicant.username}"

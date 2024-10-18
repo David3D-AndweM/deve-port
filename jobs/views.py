@@ -11,11 +11,39 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Job, JobApplication
+from .forms import JobApplicationForm, Certificate
+from io import BytesIO
+# from reportlab.pdfgen import canvas
+from django.http import FileResponse
 
+@login_required
+def apply_for_job(request, job_slug):
+    job = get_object_or_404(Job, slug=job_slug)
 
+    if request.method == 'POST':
+        form = JobApplicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.job = job
+            application.applicant = request.user
+            application.save()
 
+            # Handle multiple certificate uploads
+            if 'certificates' in request.FILES:
+                for certificate in request.FILES.getlist('certificates'):
+                    Certificate.objects.create(application=application, file=certificate)
 
-# Job Views
+            return redirect('job_list')  # Redirect to a success page or job list
+
+    else:
+        form = JobApplicationForm()
+
+    return render(request, 'jobs/apply_for_job.html', {'form': form, 'job': job})
+
 class JobList(ListView):
     model = Job
     template_name = 'jobs/job_list.html'

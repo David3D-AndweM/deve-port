@@ -2,6 +2,51 @@ from django import forms
 from .models import Job, Category, Company
 from django.utils.translation import gettext_lazy as _
 
+
+from django import forms
+from .models import JobApplication
+from django import forms
+from django.forms import modelformset_factory
+from .models import JobApplication, Certificate
+
+# forms.py
+from django import forms
+from .models import JobApplication
+
+# forms.py
+from django import forms
+from .models import JobApplication
+class JobApplicationForm(forms.ModelForm):
+    class Meta:
+        model = JobApplication
+        fields = [
+            'nrc_number',
+            'nrc_copy',
+            'school_institution',
+            'linkedIn_profile',
+            'age',
+            'experience',
+            'resume',  # Add resume field here
+        ]
+        labels = {
+            'nrc_number': 'NRC Number',
+            'nrc_copy': 'NRC Copy (Upload)',
+            'school_institution': 'School/Institution (if Internship)',
+            'linkedIn_profile': 'LinkedIn Profile',
+            'age': 'Age',
+            'experience': 'Experience (in years)',
+            'resume': 'Resume (Upload)',  # Label for resume
+        }
+        widgets = {
+            'nrc_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'nrc_copy': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            'school_institution': forms.TextInput(attrs={'class': 'form-control'}),
+            'linkedIn_profile': forms.URLInput(attrs={'class': 'form-control'}),
+            'age': forms.NumberInput(attrs={'class': 'form-control'}),
+            'experience': forms.NumberInput(attrs={'class': 'form-control'}),
+            'resume': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),  # For resume upload
+        }
+        
 class JobForm(forms.ModelForm):
     class Meta:
         model = Job

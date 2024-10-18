@@ -6,69 +6,70 @@
 
         <!-- Hero Area Start-->
         <div class="slider-area ">
-        <div class="single-slider section-overly slider-height2 d-flex align-items-center" data-background="{% static 'en/img/hero/about.jpg' %}">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <div class="hero-cap text-center">
-                            <h2>{{object}}</h2>
+            <div class="single-slider section-overly slider-height2 d-flex align-items-center" data-background="{% static 'en/img/hero/about.jpg' %}">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="hero-cap text-center">
+                                <h2>{{ object.title }}</h2>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        </div>
         <!-- Hero Area End -->
-        <!-- job post company Start -->
+        
+        <!-- Job Post Company Start -->
         <div class="job-post-company pt-120 pb-120">
             <div class="container">
                 <div class="row justify-content-between">
                     <!-- Left Content -->
                     <div class="col-xl-7 col-lg-8">
-                        <!-- job single -->
+                        <!-- Job Single -->
                         <div class="single-job-items mb-50">
                             <div class="job-items">
                                 <div class="company-img company-img-details">
-                                    <a href="#"><img src="{{object.agency.logo.url}}" alt=""></a>
+                                    <a href="#"><img src="{{ object.agency.logo.url }}" alt="Company Logo"></a>
                                 </div>
                                 <div class="job-tittle">
-                                    <a href="/jobs/{{object.slug}}">
-                                        <h4>{{object}}</h4>
+                                    <a href="/jobs/{{ object.slug }}">
+                                        <h4>{{ object.title }}</h4>
                                     </a>
                                     <ul>
-                                        <li>{{object.agency}}</li>
-                                        <li><i class="fas fa-map-marker-alt"></i>{{object.location}}</li>
-                                        <li>${{object.salary}}</li>
+                                        <li>{{ object.agency.name }}</li>
+                                        <li><i class="fas fa-map-marker-alt"></i>{{ object.location }}</li>
+                                        <li>₭ {{ object.salary }}</li> <!-- Salary in Zambian Kwacha -->
                                     </ul>
                                 </div>
                             </div>
                         </div>
-                          <!-- job single End -->
+                        <!-- Job Single End -->
                        
                         <div class="job-post-details">
                             <div class="post-details1 mb-50">
-                                <!-- Small Section Tittle -->
+                                <!-- Small Section Title -->
                                 <div class="small-section-tittle">
                                     <h3>Job Description</h3>
                                 </div>
-                                <p>{{object.description}}</p>
+                                <p>{{ object.description }}</p>
                             </div>
-                            <div class="post-details2  mb-50">
-                                 <!-- Small Section Tittle -->
+                            <div class="post-details2 mb-50">
+                                 <!-- Small Section Title -->
                                 <div class="small-section-tittle">
                                     <h3>Required Knowledge, Skills, and Abilities</h3>
                                 </div>
                                <ul>
-                                   <li>{{object.knowledge_requirements}}</li>
+                                   <li>{{ object.knowledge_requirements }}</li>
                                </ul>
                             </div>
-                            <div class="post-details2  mb-50">
-                                 <!-- Small Section Tittle -->
+                            <div class="post-details2 mb-50">
+                                 <!-- Small Section Title -->
                                 <div class="small-section-tittle">
                                     <h3>Education + Experience</h3>
                                 </div>
                                <ul>
-                                   <li>{{object.education_experience}}</li>
+                                   <li>{{ object.education_experience }}</li>
                                </ul>
                             </div>
                         </div>
@@ -76,41 +77,42 @@
                     </div>
                     <!-- Right Content -->
                     <div class="col-xl-4 col-lg-4">
-                        <div class="post-details3  mb-50">
-                            <!-- Small Section Tittle -->
+                        <div class="post-details3 mb-50">
+                            <!-- Small Section Title -->
                            <div class="small-section-tittle">
                                <h3>Job Overview</h3>
                            </div>
                           <ul>
-                              <li>Posted date : <span>{{object.created_at}}</span></li>
-                              <li>Location : <span>{{object.location}}</span></li>
-                              <li>Vacancy : <span>{{object.vacancy}}</span></li>
-                              <li>Job nature : <span>{{object.job_nature}}</span></li>
-                              <li>Salary :  <span>${{object.salary}}</span></li>
-                              <li>Application date : <span>{{object.application_date}}</span></li>
+                              <li>Posted date : <span>{{ object.created_at|date:"F j, Y" }}</span></li> <!-- Formatting the date -->
+                              <li>Location : <span>{{ object.location }}</span></li>
+                              <li>Vacancy : <span>{{ object.vacancy }}</span></li>
+                              <li>Job Nature : <span>{{ object.job_nature }}</span></li>
+                              <li>Salary : <span>₭ {{ object.salary }}</span></li> <!-- Salary in Zambian Kwacha -->
+                              <li>Application date : <span>{{ object.application_date|date:"F j, Y" }}</span></li> <!-- Formatting the date -->
                           </ul>
                          <div class="apply-btn2">
-                            <a href="#" class="btn">Apply Now</a>
+                            <a href="{% url 'apply_for_job' job.slug %}" class="btn">Apply Now</a>
+
                          </div>
                        </div>
-                        <div class="post-details4  mb-50">
-                            <!-- Small Section Tittle -->
+                        <div class="post-details4 mb-50">
+                            <!-- Small Section Title -->
                            <div class="small-section-tittle">
                                <h4>Company Information</h4>
                            </div>
-                              <span>{{object.agency}}</span>
-                              <p>{{object.presentation}}</p>
+                              <span>{{ object.agency.name }}</span>
+                              <p>{{ object.agency.presentation }}</p>
                             <ul>
-                                <li>Name: <span>{{object.agency}}</span></li>
-                                <li>Web : <span> {{object.agency.website}}</span></li>
-                                <li>Email: <span>{{object.agency.email}}</span></li>
+                                <li>Name: <span>{{ object.agency.name }}</span></li>
+                                <li>Website: <span>{{ object.agency.website }}</span></li>
+                                <li>Email: <span>{{ object.agency.email }}</span></li>
                             </ul>
                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- job post company End -->
+        <!-- Job Post Company End -->
 
     </main>
 {% endblock body %}
