@@ -33,42 +33,50 @@ class JobApplicationAdmin(admin.ModelAdmin):
     resume_display.short_description = 'Resume'
 
     @admin.action(description='Send Email Notifications')
-    
     def send_email_notifications(self, request, queryset):
         """Send acceptance or rejection emails to selected applicants."""
         accepted = queryset.filter(selected_for_interview=True)
         rejected = queryset.filter(canceled=True)
 
         # Sending acceptance emails
-        
         for application in accepted:
-            subject = f"Congratulations! You've been selected for the job '{application.job.title}'"
-            message = f"Dear {application.applicant.username},\n\nYou have been selected for an interview."
+            subject = f"Congratulations, {application.first_name} {application.last_name}!"
+            message = (
+                f"Dear {application.first_name},\n\n"
+                f"Congratulations! You've been selected for the job '{application.job.title}'. "
+                "We look forward to seeing you at the interview.\n\n"
+                "Best Regards,\nYour Company"
+            )
             try:
                 send_mail(
                     subject,
                     message,
                     'resgreentech@gmail.com',  # Your EMAIL_HOST_USER
-                    [application.applicant.email],
+                    [application.email or application.applicant.email],  # Fallback to applicant's email
                     fail_silently=False,
                 )
             except Exception as e:
-                messages.error(request, f"Failed to send email to {application.applicant.username}: {str(e)}")
+                messages.error(request, f"Failed to send email to {application.first_name} {application.last_name}: {str(e)}")
 
         # Sending rejection emails
         for application in rejected:
-            subject = f"Job Application Update"
-            message = f"Dear {application.applicant.username},\n\nWe regret to inform you that your application for '{application.job.title}' has not been successful."
+            subject = f"Job Application Update for {application.first_name} {application.last_name}"
+            message = (
+                f"Dear {application.first_name},\n\n"
+                f"We regret to inform you that your application for '{application.job.title}' has not been successful.\n"
+                "Thank you for your interest.\n\n"
+                "Best Regards,\nYour Company"
+            )
             try:
                 send_mail(
                     subject,
                     message,
                     'resgreentech@gmail.com',  # Your EMAIL_HOST_USER
-                    [application.applicant.email],
+                    [application.email or application.applicant.email],  # Fallback to applicant's email
                     fail_silently=False,
                 )
             except Exception as e:
-                messages.error(request, f"Failed to send email to {application.applicant.username}: {str(e)}")
+                messages.error(request, f"Failed to send email to {application.first_name} {application.last_name}: {str(e)}")
 
         messages.success(request, "Emails sent successfully!")
 
