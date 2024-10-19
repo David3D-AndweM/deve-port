@@ -20,6 +20,44 @@ class JobApplicationForm(forms.ModelForm):
     class Meta:
         model = JobApplication
         fields = [
+            'first_name',             # Added first name field
+            'last_name',              # Added last name field
+            'email',                  # Added email field
+            'nrc_number',
+            'nrc_copy',
+            'school_institution',
+            'linkedIn_profile',
+            'age',
+            'experience',
+            'resume',                 # Added resume field here
+        ]
+        labels = {
+            'first_name': 'First Name',                     # Label for first name
+            'last_name': 'Last Name',                       # Label for last name
+            'email': 'Email',                               # Label for email
+            'nrc_number': 'NRC Number',
+            'nrc_copy': 'NRC Copy (Upload)',
+            'school_institution': 'School/Institution (if Internship)',
+            'linkedIn_profile': 'LinkedIn Profile',
+            'age': 'Age',
+            'experience': 'Experience (in years)',
+            'resume': 'Resume (Upload)',                    # Label for resume
+        }
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),      # Widget for first name
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),       # Widget for last name
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),          # Widget for email
+            'nrc_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'nrc_copy': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            'school_institution': forms.TextInput(attrs={'class': 'form-control'}),
+            'linkedIn_profile': forms.URLInput(attrs={'class': 'form-control'}),
+            'age': forms.NumberInput(attrs={'class': 'form-control'}),
+            'experience': forms.NumberInput(attrs={'class': 'form-control'}),
+            'resume': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),  # For resume upload
+        }
+    class Meta:
+        model = JobApplication
+        fields = [
             'nrc_number',
             'nrc_copy',
             'school_institution',

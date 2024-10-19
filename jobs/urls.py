@@ -4,14 +4,17 @@ from django.conf.urls.static import static
 from .views import (
     JobList, JobDetail, JobCreate, JobUpdate, JobDelete, JobDeleteConfirm, 
     CategoryList, CategoryDetail, CategoryCreate, CategoryUpdate, CategoryDelete, 
-    CompanyList, CompanyDetail, CompanyCreate, CompanyUpdate, CompanyDelete
+    CompanyList, CompanyDetail, CompanyCreate, CompanyUpdate, CompanyDelete, test_email
 )
 from .api import JobListAPI, JobDetailAPI, CompanyListAPI, CompanyDetailAPI
 from .views import apply_for_job
 
 
 urlpatterns = [
+    
+    path('test-email/', test_email, name='test_email'),
     # Job URLs
+
     path('', JobList.as_view(), name='job_list'),
     path('add/', JobCreate.as_view(), name='add_job'),
     path('<slug:slug>/', JobDetail.as_view(), name='job_detail'),
@@ -40,7 +43,9 @@ urlpatterns = [
     path('api/companies/<int:pk>/', CompanyDetailAPI.as_view(), name='api_company_detail'),
 
     path('jobs/<slug:job_slug>/apply/', apply_for_job, name='apply_for_job'),
-    path('job/<int:pk>/', JobDetail.as_view(), name='job_detail')
+    path('job/<int:pk>/', JobDetail.as_view(), name='job_detail'),
+
+   
     
 ]
 

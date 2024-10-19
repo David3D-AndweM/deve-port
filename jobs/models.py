@@ -127,6 +127,9 @@ class Company(models.Model):
 class JobApplication(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     applicant = models.ForeignKey(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=255, blank=True, null=True) 
+    last_name = models.CharField(max_length=255, blank=True, null=True) 
+    email = models.EmailField(blank=True, null=True)
     nrc_number = models.CharField(max_length=20)
     nrc_copy = models.FileField(upload_to='nrc/', null=True, blank=True)
     school_institution = models.CharField(max_length=255, blank=True, null=True)
@@ -137,6 +140,9 @@ class JobApplication(models.Model):
     resume = models.FileField(upload_to='resumes/', null=True, blank=True)
     applied_at = models.DateTimeField(auto_now_add=True)  # Add this line
     created_at = models.DateTimeField(default=timezone.now)
+
+    selected_for_interview = models.BooleanField(default=False)
+    canceled = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Application for {self.job.title} by {self.applicant.username}"

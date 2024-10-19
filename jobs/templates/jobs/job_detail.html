@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block body %}
-<!-- Hero Area Start-->
+<!-- Hero Area Start -->
 <div class="slider-area">
-    <div class="single-slider section-overly slider-height2 d-flex align-items-center" 
-         data-background="{% static 'en/img/hero/about.jpg' %}">
+    <div class="single-slider section-overly slider-height2 d-flex align-items-center"
+         style="background-image: url('{% static "en/img/hero/about.jpg" %}');">
         <div class="container">
             <div class="row">
                 <div class="col-xl-12">
@@ -18,51 +19,40 @@
 </div>
 <!-- Hero Area End -->
 
-<!-- Job Post Company Start -->
+<!-- Job Post Details -->
 <div class="job-post-company pt-120 pb-120">
     <div class="container">
         <div class="row justify-content-between">
-            <!-- Left Content -->
             <div class="col-xl-7 col-lg-8">
-                <!-- Job Single -->
                 <div class="single-job-items mb-50">
                     <div class="job-items">
-                        <div class="company-img company-img-details">
+                        <div class="company-img">
                             <a href="#"><img src="{{ object.agency.logo.url }}" alt="Company Logo"></a>
                         </div>
                         <div class="job-tittle">
-                            <a href="/jobs/{{ object.slug }}">
-                                <h4>{{ object.title }}</h4>
-                            </a>
+                            <h4>{{ object.title }}</h4>
                             <ul>
                                 <li>{{ object.agency.name }}</li>
-                                <li><i class="fas fa-map-marker-alt"></i>{{ object.location }}</li>
-                                <li>₭ {{ object.salary }}</li> <!-- Salary in Zambian Kwacha -->
+                                <li><i class="fas fa-map-marker-alt"></i> {{ object.location }}</li>
+                                <li>₭ {{ object.salary }}</li>
                             </ul>
                         </div>
                     </div>
                 </div>
-                <!-- Job Single End -->
-                
+
                 <div class="job-post-details">
                     <div class="post-details1 mb-50">
-                        <div class="small-section-tittle">
-                            <h3>Job Description</h3>
-                        </div>
+                        <h3>Job Description</h3>
                         <p>{{ object.description }}</p>
                     </div>
                     <div class="post-details2 mb-50">
-                        <div class="small-section-tittle">
-                            <h3>Required Knowledge, Skills, and Abilities</h3>
-                        </div>
+                        <h3>Knowledge & Skills</h3>
                         <ul>
                             <li>{{ object.knowledge_requirements }}</li>
                         </ul>
                     </div>
                     <div class="post-details2 mb-50">
-                        <div class="small-section-tittle">
-                            <h3>Education + Experience</h3>
-                        </div>
+                        <h3>Education & Experience</h3>
                         <ul>
                             <li>{{ object.education_experience }}</li>
                         </ul>
@@ -70,33 +60,26 @@
                 </div>
             </div>
 
-            <!-- Right Content -->
+            <!-- Job Overview -->
             <div class="col-xl-4 col-lg-4">
                 <div class="post-details3 mb-50">
-                    <div class="small-section-tittle">
-                        <h3>Job Overview</h3>
-                    </div>
+                    <h3>Job Overview</h3>
                     <ul>
-                        <li>Posted date : <span>{{ object.created_at|date:"F j, Y" }}</span></li>
-                        <li>Location : <span>{{ object.location }}</span></li>
-                        <li>Vacancy : <span>{{ object.vacancy }}</span></li>
-                        <li>Job Nature : <span>{{ object.job_nature }}</span></li>
-                        <li>Salary : <span>₭ {{ object.salary }}</span></li>
-                        <li>Application date : <span>{{ object.application_date|date:"F j, Y" }}</span></li>
+                        <li>Posted: <span>{{ object.created_at|date:"F j, Y" }}</span></li>
+                        <li>Location: <span>{{ object.location }}</span></li>
+                        <li>Vacancies: <span>{{ object.vacancy }}</span></li>
+                        <li>Job Nature: <span>{{ object.job_nature }}</span></li>
+                        <li>Salary: <span>₭ {{ object.salary }}</span></li>
+                        <li>Deadline: <span>{{ object.application_date|date:"F j, Y" }}</span></li>
                     </ul>
-                    <div class="apply-btn2">
-                        <a href="#" class="btn apply-now">Apply Now</a>
-                    </div>
+                    <a href="#" class="btn apply-now">Apply Now</a>
                 </div>
                 <div class="post-details4 mb-50">
-                    <div class="small-section-tittle">
-                        <h4>Company Information</h4>
-                    </div>
-                    <span>{{ object.agency.name }}</span>
+                    <h4>Company Information</h4>
                     <p>{{ object.agency.presentation }}</p>
                     <ul>
                         <li>Name: <span>{{ object.agency.name }}</span></li>
-                        <li>Website: <span>{{ object.agency.website }}</span></li>
+                        <li>Website: <a href="{{ object.agency.website }}">{{ object.agency.website }}</a></li>
                         <li>Email: <span>{{ object.agency.email }}</span></li>
                     </ul>
                 </div>
@@ -104,14 +87,13 @@
         </div>
     </div>
 </div>
-<!-- Job Post Company End -->
 
 <!-- Apply Popup -->
 <div class="apply-popup" id="apply-popup">
     <div class="popup-content">
         <span class="close-popup">&times;</span>
         <h2>Apply for {{ object.title }}</h2>
-        <form action="{% url 'apply_for_job' object.slug %}" method="POST">
+        <form action="{% url 'apply_for_job' object.slug %}" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group">
                 <label for="name">Your Name</label>
@@ -140,28 +122,30 @@
         top: 0;
         width: 100%;
         height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(10px);
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .popup-content {
         background: linear-gradient(135deg, #4e54c8, #8f94fb);
         border-radius: 15px;
-        margin: 15% auto;
         padding: 20px;
         width: 80%;
         max-width: 500px;
-        animation: pop 0.5s ease-in-out;
+        animation: liquidEffect 2s infinite alternate, colorShift 10s infinite;
     }
 
-    @keyframes pop {
-        from {
-            transform: scale(0);
-        }
-        to {
-            transform: scale(1);
-        }
+    @keyframes liquidEffect {
+        from { transform: scale(1); }
+        to { transform: scale(1.05); }
+    }
+
+    @keyframes colorShift {
+        0% { background: #4e54c8; }
+        50% { background: #8f94fb; }
+        100% { background: #4e54c8; }
     }
 
     .form-group {
@@ -169,27 +153,16 @@
     }
 
     .form-group label {
-        display: block;
-        margin-bottom: 5px;
         color: white;
-    }
-
-    .form-group input {
-        width: 100%;
-        padding: 10px;
-        border: none;
-        border-radius: 5px;
-        outline: none;
     }
 
     .btn {
         background-color: #ff6b6b;
         color: white;
-        border: none;
         padding: 10px 20px;
+        border: none;
         border-radius: 5px;
         cursor: pointer;
-        transition: background-color 0.3s ease;
     }
 
     .btn:hover {
@@ -198,28 +171,29 @@
 
     .close-popup {
         color: white;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
+        font-size: 24px;
         cursor: pointer;
+        position: absolute;
+        top: 10px;
+        right: 10px;
     }
 </style>
 
 <!-- Scripts -->
 <script>
-    document.querySelector('.apply-now').addEventListener('click', function() {
-        document.getElementById('apply-popup').style.display = 'block';
+    document.querySelector('.apply-now').addEventListener('click', () => {
+        document.getElementById('apply-popup').style.display = 'flex';
     });
 
-    document.querySelector('.close-popup').addEventListener('click', function() {
+    document.querySelector('.close-popup').addEventListener('click', () => {
         document.getElementById('apply-popup').style.display = 'none';
     });
 
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('apply-popup')) {
+    window.onclick = (event) => {
+        if (event.target === document.getElementById('apply-popup')) {
             document.getElementById('apply-popup').style.display = 'none';
         }
-    }
+    };
 </script>
 
-{% endblock body %}
+{% endblock %}

@@ -19,6 +19,8 @@ from .forms import JobApplicationForm, Certificate
 from io import BytesIO
 # from reportlab.pdfgen import canvas
 from django.http import FileResponse
+from django.core.mail import send_mail
+from django.http import HttpResponse
 
 @login_required
 def apply_for_job(request, job_slug):
@@ -145,3 +147,21 @@ class CompanyDelete(LoginRequiredMixin, DeleteView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(Company, slug=self.kwargs['slug'])
+
+
+def test_email(request):
+    subject = "Test Email"
+    message = "This is a test email from your Django application."
+    recipient_list = ["davidmwape376@gmail.com"]  # Replace with your actual email
+
+    try:
+        send_mail(
+            subject,
+            message,
+            'resgreentech@gmail.com',  # Your EMAIL_HOST_USER
+            recipient_list,
+            fail_silently=False,
+        )
+        return HttpResponse("Test email sent successfully!")
+    except Exception as e:
+        return HttpResponse(f"Failed to send email: {e}")
