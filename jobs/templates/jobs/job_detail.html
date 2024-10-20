@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% block head %}
+    {{ block.super }} 
+    {% if object.agency.chatbot %}
+        <meta name="csrf-token" content="{{ csrf_token }}">
+    {% endif %}
+{% endblock head %}
 {% block body %}
 <!-- Hero Area Start -->
 <div class="slider-area">
@@ -89,32 +94,65 @@
 </div>
 
 <!-- Apply Popup -->
+<!-- Apply Popup -->
 <div class="apply-popup" id="apply-popup">
     <div class="popup-content">
         <span class="close-popup">&times;</span>
         <h2>Apply for {{ object.title }}</h2>
-        <form action="{% url 'apply_for_job' object.slug %}" method="POST" enctype="multipart/form-data">
+        <form id="apply-form">
             {% csrf_token %}
-            <div class="form-group">
-                <label for="name">Your Name</label>
-                <input type="text" id="name" name="name" required>
+            <div class="form-group question" id="question-1">
+                <label for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" required class="form-control">
             </div>
-            <div class="form-group">
-                <label for="email">Your Email</label>
-                <input type="email" id="email" name="email" required>
+            <div class="form-group question" id="question-2" style="display:none;">
+                <label for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" required class="form-control">
             </div>
-            <div class="form-group">
-                <label for="resume">Upload Resume</label>
-                <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
+            <div class="form-group question" id="question-3" style="display:none;">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required class="form-control">
             </div>
-            <button type="submit" class="btn">Submit Application</button>
+            <div class="form-group question" id="question-4" style="display:none;">
+                <label for="nrc_number">NRC Number</label>
+                <input type="text" id="nrc_number" name="nrc_number" required class="form-control">
+            </div>
+            <div class="form-group question" id="question-5" style="display:none;">
+                <label for="nrc_copy">NRC Copy (Upload)</label>
+                <input type="file" id="nrc_copy" name="nrc_copy" accept="image/*" class="form-control-file" required>
+            </div>
+            <div class="form-group question" id="question-6" style="display:none;">
+                <label for="school_institution">School/Institution (if Internship)</label>
+                <input type="text" id="school_institution" name="school_institution" class="form-control">
+            </div>
+            <div class="form-group question" id="question-7" style="display:none;">
+                <label for="linkedIn_profile">LinkedIn Profile</label>
+                <input type="url" id="linkedIn_profile" name="linkedIn_profile" class="form-control">
+            </div>
+            <div class="form-group question" id="question-8" style="display:none;">
+                <label for="age">Age</label>
+                <input type="number" id="age" name="age" required class="form-control">
+            </div>
+            <div class="form-group question" id="question-9" style="display:none;">
+                <label for="experience">Experience (in years)</label>
+                <input type="number" id="experience" name="experience" required class="form-control">
+            </div>
+            <div class="form-group question" id="question-10" style="display:none;">
+                <label for="resume">Resume (Upload)</label>
+                <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required class="form-control-file">
+            </div>
+            <div class="form-buttons">
+                <button type="button" id="next-button" class="btn">Next</button>
+                <button type="submit" id="submit-button" class="btn" style="display:none;">Submit Application</button>
+            </div>
         </form>
     </div>
 </div>
 
+
+
 <button id="chatbot-toggle" class="btn">Chat with AI</button>
 
-<!-- Chatbot Popup -->
 <div id="chatbot-popup" class="chat-popup">
     <div class="chat-header">
         <span>AI Assistant</span>
@@ -127,7 +165,6 @@
     </div>
 </div>
 
-<!-- Chatbot Styles -->
 <style>
     .chat-popup {
         display: none;
@@ -176,7 +213,164 @@
     }
 </style>
 
-<!-- Chatbot JavaScript -->
+<script>
+    const chatbotToggle = document.getElementById('chatbot-toggle');
+    const chatbotPopup = document.getElementById('chatbot-popup');
+    const closePopup = chatbotPopup.querySelector('.close-popup');
+    const chatContent = document.getElementById('chat-content');
+    const userMessageInput = document.getElementById('user-message');
+    const sendMessageButton = document.getElementById('send-message');   
+
+
+    // Retrieve CSRF token from the meta tag
+    const csrftoken = document.querySelector('[name="csrf-token"]').content;
+
+    // Show chatbot popup
+    chatbotToggle.addEventListener('click', () => {
+        chatbotPopup.style.display = 'block';
+        userMessageInput.focus();  // Focus on the input when popup opens
+    });
+
+    // Close chatbot popup
+    closePopup.addEventListener('click', () => {
+        chatbotPopup.style.display = 'none';
+    });
+
+    // Send message on button click or Enter key press
+    sendMessageButton.addEventListener('click', sendMessage);
+    userMessageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    function sendMessage() {
+        const message = userMessageInput.value.trim();
+        if (message === '') return;
+
+        // Display user message in chat window
+        addMessageToChat('You', message);
+        userMessageInput.value = '';
+
+        // Get the job ID from the URL
+        const jobId = document.querySelector('.job-details3').dataset.jobId;
+
+        // Send the message to the backend via POST request
+        fetch(`/job/${jobId}/chat/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrftoken  // Include CSRF token
+            },
+            body: new URLSearchParams({ message: message })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not OK');
+            }
+            return response.json();
+        })
+        .then(data   
+ => {
+            // Display AI's response
+            addMessageToChat('AI', data.response);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            addMessageToChat('Error', 'Could not reach AI service.');
+        });
+    }
+
+    function addMessageToChat(sender, message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+        chatContent.appendChild(messageDiv);
+
+        // Scroll to the latest message
+        chatContent.scrollTop = chatContent.scrollHeight;
+    }
+</script>
+
+<style>
+
+    
+    .chat-popup {
+        .apply-popup {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;  /* Add padding to prevent content from touching edges */
+    }
+
+    .popup-content {
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        border-radius: 15px;
+        padding: 30px;  /* Increased padding for better spacing */
+        width: 100%;
+        max-width: 600px;  /* Increased max-width for better visibility */
+        animation: liquidEffect 2s infinite alternate, colorShift 10s infinite;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);  /* Added shadow for depth */
+    }
+
+    @keyframes liquidEffect {
+        from { transform: scale(1); }
+        to { transform: scale(1.05); }
+    }
+
+    @keyframes colorShift {
+        0% { background: #4e54c8; }
+        50% { background: #8f94fb; }
+        100% { background: #4e54c8; }
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        color: white;
+        display: block;  /* Ensuring labels are block for better alignment */
+        margin-bottom: 5px;  /* Space between label and input */
+    }
+
+    .form-control,
+    .form-control-file {
+        width: 100%;  /* Ensuring inputs are full width */
+        padding: 10px;  /* Increased padding for better touch targets */
+        border-radius: 5px;  /* Rounded corners */
+        border: 1px solid #ddd;  /* Light border for better visibility */
+    }
+
+    .btn {
+        background-color: #ff6b6b;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;  /* Full width for button */
+    }
+
+    .btn:hover {
+        background-color: #ff4f4f;
+    }
+
+    .close-popup {
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+</style>
+
 <script>
     const chatbotToggle = document.getElementById('chatbot-toggle');
     const chatbotPopup = document.getElementById('chatbot-popup');
@@ -185,39 +379,66 @@
     const userMessageInput = document.getElementById('user-message');
     const sendMessageButton = document.getElementById('send-message');
 
+    // Retrieve CSRF token from the meta tag
+    const csrftoken = document.querySelector('[name="csrf-token"]').content;
+
+    // Show chatbot popup
     chatbotToggle.addEventListener('click', () => {
         chatbotPopup.style.display = 'block';
+        userMessageInput.focus();  // Focus on the input when popup opens
     });
 
+    // Close chatbot popup
     closePopup.addEventListener('click', () => {
         chatbotPopup.style.display = 'none';
     });
 
+    // Send message on button click or Enter key press
     sendMessageButton.addEventListener('click', sendMessage);
+    userMessageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
 
     function sendMessage() {
         const message = userMessageInput.value.trim();
         if (message === '') return;
 
-        // Display user message
-        chatContent.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
+        // Display user message in chat window
+        addMessageToChat('You', message);
         userMessageInput.value = '';
 
-        // Send message to the Django backend
-        fetch('/chat/', {
+        // Send the message to the backend via POST request
+        fetch('/jobs/chat/', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrftoken  // Include CSRF token
+            },
             body: new URLSearchParams({ message: message })
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not OK');
+            }
+            return response.json();
+        })
         .then(data => {
-            // Display AI reply
-            chatContent.innerHTML += `<div><strong>AI:</strong> ${data.reply}</div>`;
-            chatContent.scrollTop = chatContent.scrollHeight;
+            // Display AI's response
+            addMessageToChat('AI', data.response);
         })
         .catch(error => {
-            chatContent.innerHTML += `<div><strong>Error:</strong> Could not reach AI service.</div>`;
+            console.error('Error:', error);
+            addMessageToChat('Error', 'Could not reach AI service.');
         });
+    }
+
+    function addMessageToChat(sender, message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+        chatContent.appendChild(messageDiv);
+
+        // Scroll to the latest message
+        chatContent.scrollTop = chatContent.scrollHeight;
     }
 </script>
 
@@ -289,9 +510,11 @@
 </style>
 
 <!-- Scripts -->
-<script>
+
+   <script>
     document.querySelector('.apply-now').addEventListener('click', () => {
         document.getElementById('apply-popup').style.display = 'flex';
+        showQuestion(1);  // Show the first question when popup opens
     });
 
     document.querySelector('.close-popup').addEventListener('click', () => {
@@ -303,6 +526,52 @@
             document.getElementById('apply-popup').style.display = 'none';
         }
     };
+
+    let currentQuestionIndex = 1;
+    const totalQuestions = 10;  // Total number of questions
+
+    document.getElementById('next-button').addEventListener('click', () => {
+        const currentQuestion = document.getElementById(`question-${currentQuestionIndex}`);
+        if (currentQuestionIndex < totalQuestions) {
+            currentQuestion.style.display = 'none';  // Hide current question
+            currentQuestionIndex++;  // Move to the next question
+            showQuestion(currentQuestionIndex);  // Show next question
+        }
+        if (currentQuestionIndex === totalQuestions) {
+            document.getElementById('next-button').style.display = 'none';  // Hide next button on last question
+            document.getElementById('submit-button').style.display = 'inline-block';  // Show submit button
+        }
+    });
+
+    function showQuestion(index) {
+        document.getElementById(`question-${index}`).style.display = 'block';  // Show specified question
+    }
+
+    document.getElementById('apply-form').addEventListener('submit', (event) => {
+        event.preventDefault();  // Prevent default form submission
+
+        // Implement your form submission logic here, e.g., using fetch API
+        const formData = new FormData(event.target);
+
+        fetch('/jobs/apply/', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Application submitted successfully!');
+                document.getElementById('apply-popup').style.display = 'none';  // Close popup
+            } else {
+                alert('Error submitting application. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Could not reach the server.');
+        });
+    });
 </script>
+
+
 
 {% endblock %}

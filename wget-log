@@ -1,0 +1,18 @@
+--2024-10-20 07:19:38--  http://127.0.0.1:8000/jobs/chat/
+Connecting to 127.0.0.1:8000... connected.
+HTTP request sent, awaiting response... Read error (Connection timed out) in headers.
+Retrying.
+
+--2024-10-20 07:34:39--  (try: 2)  http://127.0.0.1:8000/jobs/chat/
+Connecting to 127.0.0.1:8000... connected.
+HTTP request sent, awaiting response... Read error (Connection timed out) in headers.
+Retrying.
+
+--2024-10-20 07:49:41--  (try: 3)  http://127.0.0.1:8000/jobs/chat/
+Connecting to 127.0.0.1:8000... connected.
+HTTP request sent, awaiting response... Read error (Connection timed out) in headers.
+Retrying.
+
+--2024-10-20 08:04:44--  (try: 4)  http://127.0.0.1:8000/jobs/chat/
+Connecting to 127.0.0.1:8000... connected.
+HTTP request sent, awaiting response... 

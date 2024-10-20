@@ -22,6 +22,12 @@ from django.http import FileResponse
 from django.core.mail import send_mail
 from django.http import HttpResponse
 
+
+
+from django.http import JsonResponse
+from .utils import generate_content
+
+
 @login_required
 def apply_for_job(request, job_slug):
     job = get_object_or_404(Job, slug=job_slug)
@@ -168,59 +174,113 @@ def test_email(request):
 
 from .utils import generate_content
 
-def ai_chatbot(request):
-    response_text = None
-    language = 'en'  # Default to English
+# def ai_chatbot(request):
+#     response_text = None
+#     language = 'en'  # Default to English
 
-    if request.method == 'POST':
-        prompt = request.POST.get('prompt')
-        language = request.POST.get('language', 'en')
-        response_text = generate_content(prompt, language)
+#     if request.method == 'POST':
+#         prompt = request.POST.get('prompt')
+#         language = request.POST.get('language', 'en')
+#         response_text = generate_content(prompt, language)
 
-    return render(request, 'ai_chatbot.html', {'response': response_text, 'language': language})
+#     return render(request, 'ai_chatbot.html', {'response': response_text, 'language': language})
 
-    from django.http import JsonResponse
-from django.conf import settings
+#     from django.http import JsonResponse
+# from django.conf import settings
 
-def ai_chat(request):
-    if request.method == 'POST':
-        user_message = request.POST.get('message')
-        api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={settings.GEMINI_API_KEY}"
-        
-        headers = {'Content-Type': 'application/json'}
-        data = {
-            "contents": [{"parts": [{"text": user_message}]}]
-        }
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_POST
 
-        response = requests.post(api_url, json=data, headers=headers)
-        ai_response = response.json().get('contents', [{}])[0].get('parts', [{}])[0].get('text', 'Sorry, I couldn’t understand that.')
-
-        return JsonResponse({'response': ai_response})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-
-def chat_with_gemini(request):
+@require_POST
+def chat_with_gemini(request, job_id):
     if request.method == 'POST':
         user_message = request.POST.get('message', '')
+        if not user_message:
+            return JsonResponse({'response': 'Please enter a message.'}, status=400)
+
+        # Generate AI response using the Gemini API, passing the job ID
+        ai_response = generate_content(user_message, job_id, language='en')
+        return JsonResponse({'response': ai_response})
+
+    return JsonResponse({'response': 'Invalid request method.'}, status=405)
+
+# def ai_chat(request):
+#     if request.method == 'POST':
+#         user_message = request.POST.get('message')
+#         api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={settings.GEMINI_API_KEY}"
+        
+#         headers = {'Content-Type': 'application/json'}
+#         data = {
+#             "contents": [{"parts": [{"text": user_message}]}]
+#         }
+
+#         response = requests.post(api_url, json=data, headers=headers)
+#         ai_response = response.json().get('contents', [{}])[0].get('parts', [{}])[0].get('text', 'Sorry, I couldn’t understand that.')
+
+#         return JsonResponse({'response': ai_response})
+#     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+# from django.http import JsonResponse
+# from django.views.decorators.csrf import csrf_exempt
+# import requests
+
+
+# @csrf_exempt
+# def chat_with_gemini(request):
+    if request.method == 'POST':
+        user_message = request.POST.get('message', '').strip()
+
+        if not user_message:
+            return JsonResponse({'reply': 'Please enter a message.'}, status=400)
+
+        # Gemini API interaction
+        gemini_api_url = (
+            'https://generativelanguage.googleapis.com/v1beta/models/'
+            'gemini-1.5-flash-latest:generateContent'
+        )
+        api_key = 'AIzaSyD2m9GuILFiOOO7fTVfojklo2MUAyA2Xd4'
+
+        if not api_key:
+            return JsonResponse({'reply': 'API key not found.'}, status=500)
 
         headers = {'Content-Type': 'application/json'}
-        data = {
-            "prompt": {
-                "text": user_message
-            }
+        payload = {
+            'prompt': {'text': user_message},
+            'temperature': 0.7
         }
 
-        response = requests.post(
-            f"{GEMINI_API_URL}?key={GEMINI_API_KEY}",
-            json=data,
-            headers=headers
-        )
+        try:
+            response = requests.post(
+                f'{gemini_api_url}?key={api_key}',
+                json=payload,
+                headers=headers,
+                timeout=10  # Add timeout to avoid long waits
+            )
 
-        if response.status_code == 200:
-            reply = response.json().get('candidates', [{}])[0].get('output', 'I could not understand that.')
-        else:
-            reply = 'Sorry, I could not process your request at the moment.'
+            if response.status_code == 200:
+                data = response.json()
+                ai_reply = (
+                    data.get('candidates', [{}])[0].get('output', 
+                    'Sorry, I did not understand that.')
+                )
+                return JsonResponse({'reply': ai_reply})
+            else:
+                return JsonResponse(
+                    {'reply': 'Error communicating with AI service.'},
+                    status=response.status_code
+                )
 
-        return JsonResponse({'reply': reply})
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({'reply': f'Request failed: {str(e)}'}, status=500)
 
-    return HttpResponseBadRequest('Invalid request method.')
+    return JsonResponse({'reply': 'Invalid request method.'}, status=405)
+
+    from django.http import HttpResponse
+
+# def test_post(request):
+#     if request.method == 'POST':
+#         return HttpResponse('POST method allowed')
+#     return HttpResponse('Invalid request', status=405)
+
+
