@@ -159,3 +159,10 @@ EMAIL_USE_TLS = True  # Use TLS for encryption
 EMAIL_HOST_USER = 'resgreentech@gmail.com'  # Your Gmail address
 EMAIL_HOST_PASSWORD = 'uxtzkqvwjjxberad'  # App password from Gmail
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+# settings.py
+
+# Add this at the end of the file
+GEMINI_API_KEY = 'AIzaSyD2m9GuILFiOOO7fTVfojklo2MUAyA2Xd4'
+GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent'

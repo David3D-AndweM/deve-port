@@ -112,6 +112,115 @@
     </div>
 </div>
 
+<button id="chatbot-toggle" class="btn">Chat with AI</button>
+
+<!-- Chatbot Popup -->
+<div id="chatbot-popup" class="chat-popup">
+    <div class="chat-header">
+        <span>AI Assistant</span>
+        <span class="close-popup">&times;</span>
+    </div>
+    <div id="chat-content" class="chat-content"></div>
+    <div class="chat-input">
+        <input type="text" id="user-message" placeholder="Ask me something..." />
+        <button id="send-message">Send</button>
+    </div>
+</div>
+
+<!-- Chatbot Styles -->
+<style>
+    .chat-popup {
+        display: none;
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        width: 300px;
+        max-height: 400px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        z-index: 1000;
+    }
+
+    .chat-header {
+        background-color: #4e54c8;
+        color: white;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .chat-content {
+        padding: 10px;
+        height: 300px;
+        overflow-y: auto;
+    }
+
+    .chat-input {
+        display: flex;
+        padding: 10px;
+    }
+
+    .chat-input input {
+        flex: 1;
+        padding: 5px;
+    }
+
+    .chat-input button {
+        background-color: #4e54c8;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+</style>
+
+<!-- Chatbot JavaScript -->
+<script>
+    const chatbotToggle = document.getElementById('chatbot-toggle');
+    const chatbotPopup = document.getElementById('chatbot-popup');
+    const closePopup = chatbotPopup.querySelector('.close-popup');
+    const chatContent = document.getElementById('chat-content');
+    const userMessageInput = document.getElementById('user-message');
+    const sendMessageButton = document.getElementById('send-message');
+
+    chatbotToggle.addEventListener('click', () => {
+        chatbotPopup.style.display = 'block';
+    });
+
+    closePopup.addEventListener('click', () => {
+        chatbotPopup.style.display = 'none';
+    });
+
+    sendMessageButton.addEventListener('click', sendMessage);
+
+    function sendMessage() {
+        const message = userMessageInput.value.trim();
+        if (message === '') return;
+
+        // Display user message
+        chatContent.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
+        userMessageInput.value = '';
+
+        // Send message to the Django backend
+        fetch('/chat/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ message: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Display AI reply
+            chatContent.innerHTML += `<div><strong>AI:</strong> ${data.reply}</div>`;
+            chatContent.scrollTop = chatContent.scrollHeight;
+        })
+        .catch(error => {
+            chatContent.innerHTML += `<div><strong>Error:</strong> Could not reach AI service.</div>`;
+        });
+    }
+</script>
+
 <!-- Styles -->
 <style>
     .apply-popup {

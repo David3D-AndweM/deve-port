@@ -7,7 +7,7 @@ from .views import (
     CompanyList, CompanyDetail, CompanyCreate, CompanyUpdate, CompanyDelete, test_email
 )
 from .api import JobListAPI, JobDetailAPI, CompanyListAPI, CompanyDetailAPI
-from .views import apply_for_job
+from .views import apply_for_job, ai_chat, chat_with_gemini
 
 
 urlpatterns = [
@@ -45,7 +45,12 @@ urlpatterns = [
     path('jobs/<slug:job_slug>/apply/', apply_for_job, name='apply_for_job'),
     path('job/<int:pk>/', JobDetail.as_view(), name='job_detail'),
 
-   
+    path('jobs/ai-chat/', ai_chat, name='ai_chat'),
+
+    
+    
+
+    path('jobs/chat/', chat_with_gemini, name='chat_with_gemini'),
     
 ]
 

@@ -124,6 +124,7 @@ class JobAdmin(admin.ModelAdmin):
     search_fields = ('title', 'location', 'description', 'knowledge_requirements', 'education_experience')
     prepopulated_fields = {'slug': ('title',)}
 
-admin.site.site_header = "Your Company Admin"
-admin.site.site_title = "Your Company Admin Portal"
-admin.site.index_title = "Welcome to Your Company Admin Portal"
+# Customizing the admin site headers and titles
+admin.site.site_header = "KCM-Training Job Administration"
+admin.site.site_title = "KCM-Training Job Admin"
+admin.site.index_title = "Welcome to the KCM-Training Job Admin Portal"

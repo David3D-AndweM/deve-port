@@ -165,3 +165,62 @@ def test_email(request):
         return HttpResponse("Test email sent successfully!")
     except Exception as e:
         return HttpResponse(f"Failed to send email: {e}")
+
+from .utils import generate_content
+
+def ai_chatbot(request):
+    response_text = None
+    language = 'en'  # Default to English
+
+    if request.method == 'POST':
+        prompt = request.POST.get('prompt')
+        language = request.POST.get('language', 'en')
+        response_text = generate_content(prompt, language)
+
+    return render(request, 'ai_chatbot.html', {'response': response_text, 'language': language})
+
+    from django.http import JsonResponse
+from django.conf import settings
+
+def ai_chat(request):
+    if request.method == 'POST':
+        user_message = request.POST.get('message')
+        api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={settings.GEMINI_API_KEY}"
+        
+        headers = {'Content-Type': 'application/json'}
+        data = {
+            "contents": [{"parts": [{"text": user_message}]}]
+        }
+
+        response = requests.post(api_url, json=data, headers=headers)
+        ai_response = response.json().get('contents', [{}])[0].get('parts', [{}])[0].get('text', 'Sorry, I couldn’t understand that.')
+
+        return JsonResponse({'response': ai_response})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def chat_with_gemini(request):
+    if request.method == 'POST':
+        user_message = request.POST.get('message', '')
+
+        headers = {'Content-Type': 'application/json'}
+        data = {
+            "prompt": {
+                "text": user_message
+            }
+        }
+
+        response = requests.post(
+            f"{GEMINI_API_URL}?key={GEMINI_API_KEY}",
+            json=data,
+            headers=headers
+        )
+
+        if response.status_code == 200:
+            reply = response.json().get('candidates', [{}])[0].get('output', 'I could not understand that.')
+        else:
+            reply = 'Sorry, I could not process your request at the moment.'
+
+        return JsonResponse({'reply': reply})
+
+    return HttpResponseBadRequest('Invalid request method.')
